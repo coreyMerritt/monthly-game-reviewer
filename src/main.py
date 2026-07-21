@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 import os
 import time
+import argparse
+import calendar
 from datetime import datetime
 
 import requests
 from rich.console import Console
 from rich.table import Table
 
-# Human modifiable vars
-START_DATE = "2026-5-01"
-END_DATE = "2026-5-31"
-PC = True
-PS5 = True
+# Parse required CLI arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("--month", required=True, type=int, choices=range(1, 13), metavar="[1-12]", help="Month (1-12)")
+parser.add_argument("--year", required=True, type=int, metavar="xxxx", help="Year (ex 2026)")
+args = parser.parse_args()
+
+# Determine start and end dates for the given month/year
+LAST_DAY = calendar.monthrange(args.year, args.month)[1]
+START_DATE = f"{args.year}-{args.month}-01"
+END_DATE = f"{args.year}-{args.month}-{LAST_DAY}"
 
 # Rich instantiation
 console = Console()
@@ -23,10 +30,8 @@ table.add_column("Rating")
 
 # Determine the platform query
 platform_query_list = []
-if PC:
-  platform_query_list.append("6")
-if PS5:
-  platform_query_list.append("167")
+platform_query_list.append("6")
+platform_query_list.append("167")
 PLATFORM_QUERY_STRING = ", ".join(map(str, platform_query_list))
 
 # Convert to UNIX timestamps (UTC)
