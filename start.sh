@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-./.venv/bin/python "./src/main.py"
+./.venv/bin/python "./src/main.py" "$@"
